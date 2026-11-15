@@ -1,0 +1,9 @@
+apiVersion: v2
+name: hello
+description: Demo project for a GitOps platform
+type: application
+version: 0.1.0
+dependencies:
+  - name: app-template
+    version: 4.6.2
+    repository: oci://ghcr.io/bjw-s-labs/helm

@@ -1,0 +1,13 @@
+app-template:
+  route:
+    internal:
+      parentRefs:
+        - name: internal
+          namespace: istio-ingress
+          sectionName: https
+      hostnames:
+        - hello.apps.int.dvop.cc
+      rules:
+        - backendRefs:
+            - identifier: main
+              port: 8080
