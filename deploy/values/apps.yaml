@@ -11,3 +11,16 @@ app-template:
         - backendRefs:
             - identifier: main
               port: 8080
+    # Nom public (Cloudflare Tunnel → Gateway public, Access devant) : déclaré
+    # dans homelab-iac k8s/projects/hello/apps.yaml (access: cloudflare).
+    public:
+      parentRefs:
+        - name: public
+          namespace: istio-ingress
+          sectionName: http
+      hostnames:
+        - hello.dvop.cc
+      rules:
+        - backendRefs:
+            - identifier: main
+              port: 8080
