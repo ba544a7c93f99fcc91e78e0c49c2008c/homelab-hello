@@ -1,4 +1,17 @@
 app-template:
+  # 2 réplicas sur 2 nœuds : perdre un nœud apps ne coupe plus hello
+  # (réplica unique = ~5 min d attente d éviction). Lab mono-nœud : 1 réplica.
+  controllers:
+    hello:
+      replicas: 2
+      pod:
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/controller: hello
   route:
     internal:
       parentRefs:
