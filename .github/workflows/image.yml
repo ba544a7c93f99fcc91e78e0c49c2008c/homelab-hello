@@ -1,0 +1,24 @@
+# Build de l'image témoin via le template partagé (runner docker-homelab-hello,
+# prd-build-runner-01). Rétention N-2 gérée par le template.
+name: image
+
+on:
+  push:
+    branches: [main]
+    paths: [image/**, .github/workflows/image.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    permissions:
+      contents: read
+      packages: write
+    uses: ba544a7c93f99fcc91e78e0c49c2008c/ci-templates/.github/workflows/oci-image.yml@v1
+    with:
+      runner: docker-homelab-hello
+      context: image
+      dockerfile: image/Dockerfile
+      image: ghcr.io/ba544a7c93f99fcc91e78e0c49c2008c/homelab-hello
+
