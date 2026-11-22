@@ -1,0 +1,10 @@
+component: web
+path: image
+profile: docker
+template: oci-image
+with:
+  context: image
+  dockerfile: image/Dockerfile
+outputs:
+  - type: image
+    name: ghcr.io/ba544a7c93f99fcc91e78e0c49c2008c/homelab-hello
