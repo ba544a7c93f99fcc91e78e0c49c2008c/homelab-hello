@@ -10,7 +10,7 @@ app-template:
       type: persistentVolumeClaim
       existingClaim: s3-smoke
       advancedMounts:
-        s3smoke3:
+        s3smoke4:
           main:
             - path: /mnt/smoke
     # Racine step-ca de la plateforme (ConfigMap posé par la baseline) : rclone
@@ -19,20 +19,20 @@ app-template:
       type: configMap
       name: platform-ca
       advancedMounts:
-        s3smoke3:
+        s3smoke4:
           main:
             - path: /etc/platform-ca
               readOnly: true
     tmp:
       type: emptyDir
       advancedMounts:
-        s3smoke3:
+        s3smoke4:
           main:
             - path: /tmp
   # 2 réplicas sur 2 nœuds : perdre un nœud apps ne coupe plus hello
   # (réplica unique = ~5 min d attente d éviction). Lab mono-nœud : 1 réplica.
   controllers:
-    s3smoke3:
+    s3smoke4:
       type: job
       job:
         backoffLimit: 3
