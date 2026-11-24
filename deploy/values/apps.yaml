@@ -10,19 +10,29 @@ app-template:
       type: persistentVolumeClaim
       existingClaim: s3-smoke
       advancedMounts:
-        s3smoke2:
+        s3smoke3:
           main:
             - path: /mnt/smoke
+    # Racine step-ca de la plateforme (ConfigMap posé par la baseline) : rclone
+    # (Go) la lit via SSL_CERT_FILE quand l endpoint S3 passe en https.
+    platform-ca:
+      type: configMap
+      name: platform-ca
+      advancedMounts:
+        s3smoke3:
+          main:
+            - path: /etc/platform-ca
+              readOnly: true
     tmp:
       type: emptyDir
       advancedMounts:
-        s3smoke2:
+        s3smoke3:
           main:
             - path: /tmp
   # 2 réplicas sur 2 nœuds : perdre un nœud apps ne coupe plus hello
   # (réplica unique = ~5 min d attente d éviction). Lab mono-nœud : 1 réplica.
   controllers:
-    s3smoke2:
+    s3smoke3:
       type: job
       job:
         backoffLimit: 3
@@ -40,6 +50,7 @@ app-template:
           args:
             - |
               set -eu
+              echo "endpoint scheme: ${RCLONE_CONFIG_GARAGE_ENDPOINT%%://*}"
               echo "s3 $(date -u +%FT%TZ)" > /tmp/s3.txt
               rclone copyto /tmp/s3.txt "garage:$BUCKET/smoke/s3.txt"
               rclone cat "garage:$BUCKET/smoke/s3.txt"
@@ -50,6 +61,9 @@ app-template:
               echo SMOKE-OK
           env:
             HOME: /tmp
+            # Remplace le magasin par défaut pour ce processus : seule la racine
+            # plateforme est approuvée (aucun endpoint public visé). Sans effet en http.
+            SSL_CERT_FILE: /etc/platform-ca/ca.crt
             RCLONE_CONFIG_GARAGE_TYPE: s3
             RCLONE_CONFIG_GARAGE_PROVIDER: Other
             RCLONE_CONFIG_GARAGE_FORCE_PATH_STYLE: "true"
