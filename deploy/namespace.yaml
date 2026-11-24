@@ -2,3 +2,9 @@ namespace:
   description: "Platform demo project"
   labels: {}
   annotations: {}
+# Droits S3 du projet sur les buckets alloués par la plateforme (homelab-iac
+# k8s/projects/hello/apps.yaml s3Buckets) : smoke monté en rw, écrit par s3-smoke.
+s3:
+  smoke:
+    mount: rw
+    writers: [s3-smoke]
